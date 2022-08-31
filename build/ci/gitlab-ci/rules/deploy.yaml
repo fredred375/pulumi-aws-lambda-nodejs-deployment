@@ -1,0 +1,41 @@
+# dev
+.rules-deploy-dev:
+  if: $CI_COMMIT_BRANCH == "develop" && ($UPSTREAM_PIPELINE_SOURCE == "push" || $UPSTREAM_PIPELINE_SOURCE == "web" || $CI_PIPELINE_SOURCE == 'push' || $CI_PIPELINE_SOURCE == 'web')
+  variables:
+    ENV: dev-0
+    AWS_ACCESS_KEY_ID: ${DEV_AWS_ACCESS_KEY_ID}
+    AWS_SECRET_ACCESS_KEY: ${DEV_AWS_SECRET_ACCESS_KEY}
+  changes:
+    - build/ci/**/*
+    - configs/pulumi/examples/$ENV.env
+    - src/**/*
+    - deployments/pulumi/index.ts
+    - yarn.lock
+
+# staging
+.rules-deploy-staging:
+  if: $CI_COMMIT_BRANCH == "staging" && ($UPSTREAM_PIPELINE_SOURCE == "push" || $UPSTREAM_PIPELINE_SOURCE == "web" || $CI_PIPELINE_SOURCE == 'push' || $CI_PIPELINE_SOURCE == 'web')
+  variables:
+    ENV: stg-0
+    AWS_ACCESS_KEY_ID: ${STAGING_AWS_ACCESS_KEY_ID}
+    AWS_SECRET_ACCESS_KEY: ${STAGING_AWS_SECRET_ACCESS_KEY}
+  changes:
+    - build/ci/**/*
+    - configs/pulumi/examples/$ENV.env
+    - src/**/*
+    - deployments/pulumi/index.ts
+    - yarn.lock
+
+# prod
+.rules-deploy-prod:
+  if: $CI_COMMIT_BRANCH == "main" && ($UPSTREAM_PIPELINE_SOURCE == "push" || $UPSTREAM_PIPELINE_SOURCE == "web" || $CI_PIPELINE_SOURCE == 'push' || $CI_PIPELINE_SOURCE == 'web')
+  variables:
+    ENV: prod-0
+    AWS_ACCESS_KEY_ID: ${PROD_AWS_ACCESS_KEY_ID}
+    AWS_SECRET_ACCESS_KEY: ${PROD_AWS_SECRET_ACCESS_KEY}
+  changes:
+    - build/ci/**/*
+    - configs/pulumi/examples/$ENV.env
+    - src/**/*
+    - deployments/pulumi/index.ts
+    - yarn.lock

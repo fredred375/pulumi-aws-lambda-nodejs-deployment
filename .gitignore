@@ -1,0 +1,7 @@
+/bin/
+/configs/pulumi/*
+!/configs/pulumi/examples
+/node_modules/
+package-lock.json
+Pulumi.*.yaml
+*.log

@@ -1,0 +1,15 @@
+{
+  "name": "pulumi-aws-lambda-nodejs-example-deployment",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@gitlab.com:moxa/ibg/software/platform/cloud/public/examples/pulumi-aws-lambda-nodejs-example/pulumi-aws-lambda-nodejs-example-deployment.git",
+  "author": "FrederickHW Chu <frederickhw.chu@moxa.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@pulumi/aws": "^5.10.0",
+    "@pulumi/pulumi": "^3.36.0"
+  },
+  "devDependencies": {
+    "@types/node": "^18.6.1"
+  }
+}

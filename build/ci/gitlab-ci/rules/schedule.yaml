@@ -1,0 +1,23 @@
+# dev
+.rules-schedule-dev:
+  if: $CI_COMMIT_BRANCH == "develop" && $CI_PIPELINE_SOURCE == "schedule"
+  variables:
+    ENV: dev-0
+    AWS_ACCESS_KEY_ID: ${DEV_AWS_ACCESS_KEY_ID}
+    AWS_SECRET_ACCESS_KEY: ${DEV_AWS_SECRET_ACCESS_KEY}
+
+# staging
+.rules-schedule-staging:
+  if: $CI_COMMIT_BRANCH == "staging" && $CI_PIPELINE_SOURCE == "schedule"
+  variables:
+    ENV: stg-0
+    AWS_ACCESS_KEY_ID: ${STAGING_AWS_ACCESS_KEY_ID}
+    AWS_SECRET_ACCESS_KEY: ${STAGING_AWS_SECRET_ACCESS_KEY}
+
+# prod
+.rules-schedule-prod:
+  if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == "schedule"
+  variables:
+    ENV: prod-0
+    AWS_ACCESS_KEY_ID: ${PROD_AWS_ACCESS_KEY_ID}
+    AWS_SECRET_ACCESS_KEY: ${PROD_AWS_SECRET_ACCESS_KEY}

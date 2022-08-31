@@ -1,0 +1,84 @@
+include:
+  - local: build/ci/gitlab-ci/rules/all-pipeline-source.yaml
+  - local: build/ci/gitlab-ci/rules/deploy.yaml
+  - local: build/ci/gitlab-ci/rules/merge-request.yaml
+  - local: build/ci/gitlab-ci/rules/schedule.yaml
+
+stages:
+  - deps
+  - config
+  - preview
+  - deploy
+  - review
+
+image: 233704588990.dkr.ecr.ap-northeast-1.amazonaws.com/moxa-cloud-platform-library/pulumi-awscli-kubectl:3.36.0
+
+cache:
+  - key:
+      files:
+        - yarn.lock
+      prefix: nodejs
+    paths:
+      - node_modules/
+    policy: pull
+
+variables:
+  PULUMI_DIR: deployments/pulumi/
+  VERSION:
+    description: The target lambda version for the alias to use
+
+deps:nodejs:
+  stage: deps
+  image: 233704588990.dkr.ecr.us-west-2.amazonaws.com/thingspro-cloud-ci/ci-job-image:node-14
+  script:
+    - yarn
+  cache:
+    - key:
+        files:
+          - yarn.lock
+        prefix: nodejs
+      paths:
+        - node_modules/
+      policy: pull-push
+  rules:
+    - !reference [.rules-all-pipeline-source-dev]
+    - !reference [.rules-all-pipeline-source-prod]
+
+config:
+  stage: config
+  script:
+    - cp configs/pulumi/examples/$ENV.env configs/pulumi/$ENV.env
+    - ./scripts/main config
+  artifacts:
+    expire_in: 60 days
+    reports:
+      dotenv: configs/pulumi/$ENV.env
+  rules:
+    - !reference [.rules-all-pipeline-source-dev]
+    - !reference [.rules-all-pipeline-source-prod]
+
+preview:
+  stage: preview
+  script:
+    - pulumi preview -s $ENV -C $PULUMI_DIR --diff
+  rules:
+    - !reference [.rules-merge-request-dev]
+    - !reference [.rules-merge-request-prod]
+
+deploy:
+  stage: deploy
+  script:
+    - pulumi up --yes -s $ENV -C $PULUMI_DIR
+  rules:
+    - !reference [.rules-deploy-dev]
+    - !reference [.rules-deploy-prod]
+
+review:
+  stage: review
+  script:
+    - pulumi preview -s $ENV -C $PULUMI_DIR --diff --expect-no-changes
+  rules:
+    - !reference [.rules-deploy-dev]
+    - !reference [.rules-deploy-prod]
+    - !reference [.rules-schedule-dev]
+    - !reference [.rules-schedule-prod]

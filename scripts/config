@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+set -xe
+
+export $(grep -v '^#' configs/pulumi/${ENV}.env | xargs)
+
+pulumi stack export -s $ENV -C $PULUMI_DIR --file state.json
+: ${PREV_VERSION=$(jq -r '.deployment.resources[].outputs | select(.functionVersion).functionVersion' deployments/pulumi/state.json)}
+
+echo "VERSION=${VERSION}" >> configs/pulumi/$ENV.env
+echo "PREV_VERSION=${PREV_VERSION:-1}" >> configs/pulumi/$ENV.env

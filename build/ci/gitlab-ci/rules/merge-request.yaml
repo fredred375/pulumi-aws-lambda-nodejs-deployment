@@ -1,0 +1,41 @@
+# dev
+.rules-merge-request-dev:
+  if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop" || $UPSTREAM_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop"
+  variables:
+    ENV: dev-0
+    AWS_ACCESS_KEY_ID: ${DEV_AWS_ACCESS_KEY_ID}
+    AWS_SECRET_ACCESS_KEY: ${DEV_AWS_SECRET_ACCESS_KEY}
+  changes:
+    - build/ci/**/*
+    - configs/pulumi/examples/$ENV.env
+    - src/**/*
+    - deployments/pulumi/index.ts
+    - yarn.lock
+
+# staging
+.rules-merge-request-staging:
+  if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "staging" || $UPSTREAM_MERGE_REQUEST_TARGET_BRANCH_NAME == "staging"
+  variables:
+    ENV: stg-0
+    AWS_ACCESS_KEY_ID: ${STAGING_AWS_ACCESS_KEY_ID}
+    AWS_SECRET_ACCESS_KEY: ${STAGING_AWS_SECRET_ACCESS_KEY}
+  changes:
+    - build/ci/**/*
+    - configs/pulumi/examples/$ENV.env
+    - src/**/*
+    - deployments/pulumi/index.ts
+    - yarn.lock
+
+# prod
+.rules-merge-request-prod:
+  if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main" || $UPSTREAM_MERGE_REQUEST_TARGET_BRANCH_NAME == "main"
+  variables:
+    ENV: prod-0
+    AWS_ACCESS_KEY_ID: ${PROD_AWS_ACCESS_KEY_ID}
+    AWS_SECRET_ACCESS_KEY: ${PROD_AWS_SECRET_ACCESS_KEY}
+  changes:
+    - build/ci/**/*
+    - configs/pulumi/examples/$ENV.env
+    - src/**/*
+    - deployments/pulumi/index.ts
+    - yarn.lock
